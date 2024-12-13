@@ -1,0 +1,9 @@
+{
+  "imports": {
+    "hono": "npm:hono@^4.6.11"
+  },
+  "tasks": {
+    "dev": "deno run --watch main.ts",
+    "build": "deno compile main.ts"
+  }
+}
