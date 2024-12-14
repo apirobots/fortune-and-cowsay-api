@@ -10,10 +10,14 @@ app.use("*", (c, next) => {
     return next();
 });
 
-// Get crypto price with query params
 app.get("/v1/fortune", async (c) => {
     c.header("Cache-Control", "max-age=6000, s-max-age=6000");
     return fortune(c);
+});
+
+app.get("/v1/cowsay", async (c) => {
+    c.header("Cache-Control", "max-age=6000, s-max-age=6000");
+    return fortuneCowsay(c);
 });
 
 // Get crypto price with query params
@@ -54,4 +58,20 @@ async function fortune(c: Context) {
     process.close();
 
     return c.json({ fortune: fortuneText });
+}
+
+async function fortuneCowsay(c: Context) {
+    const process = Deno.run({
+        cmd: ["sh", "-c", "fortune | cowsay -r"],
+        stdout: "piped",
+        stderr: "piped"
+    });
+
+    const output = await process.output();
+    const decoder = new TextDecoder();
+    const cowText = decoder.decode(output);
+
+    process.close();
+
+    return c.json({ cow: cowText });
 }
