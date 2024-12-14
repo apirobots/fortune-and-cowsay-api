@@ -40,6 +40,18 @@ if (import.meta.main) {
 
 export { app };
 
-function fortune(c: Context) {
-    throw new Error("Function not implemented.");
+async function fortune(c: Context) {
+    const process = Deno.run({
+        cmd: ["fortune"],
+        stdout: "piped",
+        stderr: "piped"
+    });
+
+    const output = await process.output();
+    const decoder = new TextDecoder();
+    const fortuneText = decoder.decode(output);
+
+    process.close();
+
+    return c.json({ fortune: fortuneText });
 }
