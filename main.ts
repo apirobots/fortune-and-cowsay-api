@@ -31,7 +31,7 @@ app.use("*", (c, next) => {
 /**
  * Generates a random fortune message
  */
-app.get("/v1/fortune", async (c) => {
+app.get("/v1/fortune/plain", async (c) => {
     c.header("Cache-Control", "max-age=1, s-max-age=1");
     return fortune(c);
 });
@@ -39,9 +39,17 @@ app.get("/v1/fortune", async (c) => {
 /**
  * Generates a random fortune message displayed by a random ASCII cow
  */
-app.get("/v1/cowsay", async (c) => {
+app.get("/v1/fortune/cowsay", async (c) => {
     c.header("Cache-Control", "max-age=1, s-max-age=1");
     return fortuneCowsay(c);
+});
+
+/**
+ * Generates a random fortune message displayed by a random ASCII cow
+ */
+app.get("/v1/fortune/random-cow", async (c) => {
+    c.header("Cache-Control", "max-age=1, s-max-age=1");
+    return fortuneCowsayRandom(c);
 });
 
 /** 
@@ -75,7 +83,7 @@ async function fortune(c: Context) {
 // Update fortuneCowsay function
 async function fortuneCowsay(c: Context) {
     const command = new Deno.Command("sh", {
-        args: ["-c", "fortune | cowsay -r"],
+        args: ["-c", "fortune | cowsay"],
         stdout: "piped",
         stderr: "piped"
     });
@@ -83,5 +91,18 @@ async function fortuneCowsay(c: Context) {
     const { stdout } = await command.output();
     const cowText = new TextDecoder().decode(stdout);
     
-    return c.json({ cow: cowText.trim() });
+    return c.json({ fortune: cowText.trim() });
+}
+
+async function fortuneCowsayRandom(c: Context) {
+    const command = new Deno.Command("sh", {
+        args: ["-c", "fortune | cowsay -f /app/cowfiles/$(ls /app/cowfiles | shuf -n 1)"],
+        stdout: "piped",
+        stderr: "piped"
+    });
+
+    const { stdout } = await command.output();
+    const cowText = new TextDecoder().decode(stdout);
+
+    return c.json({ fortune: cowText.trim() });
 }
