@@ -59,47 +59,29 @@ app.notFound((c) => {
     return c.json({ error: "Not Found" }, 404);
 });
 
-
-/**
- * Generates a random fortune message
- * @param {Context} c - The Hono context object
- * @returns {Promise<Response>} JSON response containing the fortune message
- * @throws {Error} If fortune command fails
- */
+// Update fortune function
 async function fortune(c: Context) {
-    const process = Deno.run({
-        cmd: ["fortune"],
+    const command = new Deno.Command("fortune", {
         stdout: "piped",
         stderr: "piped"
     });
-
-    const output = await process.output();
-    const decoder = new TextDecoder();
-    const fortuneText = decoder.decode(output);
-
-    process.close();
-
-    return c.json({ fortune: fortuneText });
+    
+    const { stdout } = await command.output();
+    const fortuneText = new TextDecoder().decode(stdout);
+    
+    return c.json({ fortune: fortuneText.trim() });
 }
 
-/**
- * Generates a random fortune message displayed by a random ASCII cow
- * @param {Context} c - The Hono context object
- * @returns {Promise<Response>} JSON response containing the cow saying a fortune
- * @throws {Error} If fortune or cowsay commands fail
- */
+// Update fortuneCowsay function
 async function fortuneCowsay(c: Context) {
-    const process = Deno.run({
-        cmd: ["sh", "-c", "fortune | cowsay -r"],
+    const command = new Deno.Command("sh", {
+        args: ["-c", "fortune | cowsay -r"],
         stdout: "piped",
         stderr: "piped"
     });
-
-    const output = await process.output();
-    const decoder = new TextDecoder();
-    const cowText = decoder.decode(output);
-
-    process.close();
-
-    return c.json({ cow: cowText });
+    
+    const { stdout } = await command.output();
+    const cowText = new TextDecoder().decode(stdout);
+    
+    return c.json({ cow: cowText.trim() });
 }

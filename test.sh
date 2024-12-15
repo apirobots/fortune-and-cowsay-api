@@ -1,1 +1,1 @@
-deno test --allow-net --allow-read --allow-env test/main.test.ts
+deno test --allow-net --allow-read --allow-env --allow-run test/main.test.ts
