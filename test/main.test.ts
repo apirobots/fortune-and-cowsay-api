@@ -7,17 +7,24 @@ const baseUrl = `http://localhost:${PORT}/v1`;
 run();
 
 Deno.test("fortune endpoint returns fortune message", async () => {
-    const resp = await fetch(`${baseUrl}/fortune`);
+    const resp = await fetch(`${baseUrl}/fortune/plain`);
     assertEquals(resp.status, 200);
     const data = await resp.json();
     assertExists(data.fortune);
 });
 
 Deno.test("cowsay endpoint returns cow ASCII art", async () => {
-    const resp = await fetch(`${baseUrl}/cowsay`);
+    const resp = await fetch(`${baseUrl}/fortune/cowsay`);
     assertEquals(resp.status, 200);
     const data = await resp.json();
-    assertExists(data.cow);
+    assertExists(data.fortune);
+});
+
+Deno.test("random cow endpoint returns cow ASCII art", async () => {
+    const resp = await fetch(`${baseUrl}/fortune/random-cow`);
+    assertEquals(resp.status, 200);
+    const data = await resp.json();
+    assertExists(data.fortune);
 });
 
 Deno.test("ping endpoint returns response", async () => {
@@ -35,7 +42,7 @@ Deno.test("invalid endpoint returns 404", async () => {
 });
 
 Deno.test("CORS headers are present", async () => {
-    const resp = await fetch(`${baseUrl}/fortune`);
+    const resp = await fetch(`${baseUrl}/fortune/plain`);
     assertEquals(resp.status, 200);
     const data = await resp.json();
     assertEquals(resp.headers.get("Access-Control-Allow-Origin"), "*");
