@@ -32,7 +32,7 @@ app.use("*", (c, next) => {
  * Generates a random fortune message
  */
 app.get("/v1/fortune", async (c) => {
-    c.header("Cache-Control", "max-age=6000, s-max-age=6000");
+    c.header("Cache-Control", "max-age=1, s-max-age=1");
     return fortune(c);
 });
 
@@ -40,7 +40,7 @@ app.get("/v1/fortune", async (c) => {
  * Generates a random fortune message displayed by a random ASCII cow
  */
 app.get("/v1/cowsay", async (c) => {
-    c.header("Cache-Control", "max-age=6000, s-max-age=6000");
+    c.header("Cache-Control", "max-age=1, s-max-age=1");
     return fortuneCowsay(c);
 });
 
@@ -48,7 +48,7 @@ app.get("/v1/cowsay", async (c) => {
  * Ping request to check if the server is up
  */
 app.get("/v1/ping", async (c) => {
-    c.header("Cache-Control", "max-age=6000, s-max-age=6000");
+    c.header("Cache-Control", "max-age=1, s-max-age=1");
     return fortune(c);
 });
 
