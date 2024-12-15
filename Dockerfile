@@ -1,16 +1,21 @@
 # Use the official Deno image as the base image
-FROM --platform=linux/amd64 denoland/deno:alpine-2.0.6
+FROM denoland/deno:alpine-2.0.6
 
 # Set the working directory
 WORKDIR /app
+
+# Install fortune and cowsay packages
+RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+RUN apk add --no-cache fortune
+RUN apk add --no-cache cowsay
 
 # Copy the project files to the working directory
 COPY . .
 
 # Expose the port that the application will run on
-EXPOSE 8000
+EXPOSE 8080
 
 RUN deno cache main.ts
 
 # Run the Deno application
-CMD ["run", "--allow-read", "--allow-env", "--allow-net", "main.ts"]
+CMD ["run", "--allow-all", "main.ts"]
