@@ -56,8 +56,8 @@ app.get("/v1/fortune/random-cow", async (c) => {
  */
 app.get("/v1/cowsay", async (c) => {
     c.header("Cache-Control", "max-age=36000, s-max-age=36000");
-    const text = c.req.query("text") || "";
-    return cowsay(c, text);
+    const msg = c.req.query("message") || "";
+    return cowsay(c, msg);
 });
 
 /**
