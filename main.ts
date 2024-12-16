@@ -36,7 +36,7 @@ app.get("/v1/fortune/plain", async (c) => {
 });
 
 /**
- * Generates a random fortune message displayed by a random ASCII cow
+ * Generates a random fortune message displayed by an ASCII cow
  */
 app.get("/v1/fortune/cowsay", async (c) => {
     c.header("Cache-Control", "max-age=1, s-max-age=1");
@@ -52,7 +52,7 @@ app.get("/v1/fortune/random-cow", async (c) => {
 });
 
 /**
- * Generates a random ASCII cow with a message
+ * Generates an ASCII cow with a message
  */
 app.get("/v1/cowsay", async (c) => {
     c.header("Cache-Control", "max-age=36000, s-max-age=36000");
