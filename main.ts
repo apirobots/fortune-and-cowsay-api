@@ -19,7 +19,6 @@ if (import.meta.main) {
 
 export { app };
 
-
 // CORS middleware
 app.use("*", (c, next) => {
     c.header("Access-Control-Allow-Origin", "*");
@@ -52,7 +51,16 @@ app.get("/v1/fortune/random-cow", async (c) => {
     return fortuneCowsayRandom(c);
 });
 
-/** 
+/**
+ * Generates a random ASCII cow with a message
+ */
+app.get("/v1/cowsay", async (c) => {
+    c.header("Cache-Control", "max-age=36000, s-max-age=36000");
+    const text = c.req.query("text") || "";
+    return cowsay(c, text);
+});
+
+/**
  * Ping request to check if the server is up
  */
 app.get("/v1/ping", async (c) => {
@@ -97,6 +105,26 @@ async function fortuneCowsay(c: Context) {
 async function fortuneCowsayRandom(c: Context) {
     const command = new Deno.Command("sh", {
         args: ["-c", "fortune | cowsay -f /app/cowfiles/$(ls /app/cowfiles | shuf -n 1)"],
+        stdout: "piped",
+        stderr: "piped"
+    });
+
+    const { stdout } = await command.output();
+    const cowText = new TextDecoder().decode(stdout);
+
+    return c.json({ fortune: cowText.trim() });
+}
+
+async function cowsay(c: Context, text: string) {
+    function sanitizeText() {
+        return text.replace(/[^a-zA-Z0-9 ]/g, "")
+            .replace(/"/g, '\\"');
+    }
+
+    const sanitizedText = sanitizeText();
+    const cmd = `echo "${sanitizedText}" | cowsay`;
+    const command = new Deno.Command("sh", {
+        args: ["-c", cmd],
         stdout: "piped",
         stderr: "piped"
     });
