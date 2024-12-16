@@ -28,6 +28,9 @@ To run this API locally:
 
 This will start the server on `http://localhost:8080`.
 
+## Free Public API
+
+You can also use the free public API hosted on RapidAPI: [Fortune and Cowsay Public API](https://apirobots.pro/apis/fortune-and-cowsay-api/)
 
 ## 🚀 API Endpoints
 
