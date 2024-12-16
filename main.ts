@@ -122,6 +122,9 @@ async function cowsay(c: Context, text: string) {
     }
 
     const sanitizedText = sanitizeText();
+    if (!sanitizedText) {
+        return c.json({ error: "Invalid text" }, 400);
+    }
     const cmd = `echo "${sanitizedText}" | cowsay`;
     const command = new Deno.Command("sh", {
         args: ["-c", cmd],
